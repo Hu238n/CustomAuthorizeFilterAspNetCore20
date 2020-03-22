@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.OpenApi.Models;
 
 namespace CustomAuthorizeFilterAspNetCore21
 {
@@ -31,6 +32,10 @@ namespace CustomAuthorizeFilterAspNetCore21
                 // Configure single or multiple passwords for authentication
                 options.AuthKey = "custom auth key";
             });
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
+            });
 
             services.AddMvc(options =>
             {
@@ -45,6 +50,14 @@ namespace CustomAuthorizeFilterAspNetCore21
             {
                 app.UseDeveloperExceptionPage();
             }
+            app.UseSwagger();
+
+            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
+            // specifying the Swagger JSON endpoint.
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+            });
 
             // Enable authentication capabilities
             app.UseAuthentication();
